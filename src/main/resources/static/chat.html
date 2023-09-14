@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Window</title>
+    <style>
+        /* Add your CSS styles for the chat window here */
+        #chat-window {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #user-input {
+            padding: 10px;
+            display: flex;
+        }
+
+        #message-input {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        #send-button {
+            margin-left: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-window">
+    <div id="chat-messages">
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <div id="user-input">
+        <input type="text" id="message-input" placeholder="Type your message">
+        <button id="send-button">Send</button>
+    </div>
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    // Function to add a user message to the chat window
+    function addUserMessage(message) {
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.className = 'user-message';
+        userMessageDiv.textContent = message;
+        chatMessages.appendChild(userMessageDiv);
+    }
+
+    // Function to add a response message to the chat window
+    function addResponseMessage(message) {
+        const responseMessageDiv = document.createElement('div');
+        responseMessageDiv.className = 'response-message';
+        responseMessageDiv.textContent = message;
+        chatMessages.appendChild(responseMessageDiv);
+    }
+
+    // Event listener for the send button
+    sendButton.addEventListener('click', () => {
+        const userMessage = messageInput.value;
+        const newUserMessage = {
+            "message": userMessage
+        }
+        if (userMessage.trim() !== '') {
+            addUserMessage(userMessage);
+            // Send the message to the Spring Boot API endpoint here
+            fetch('http://localhost:8080/api/chat/send', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUserMessage),
+            }).catch(error => {
+                console.error('Error:', error);
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the API response here
+                    addResponseMessage(data.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            // Clear the message input
+            messageInput.value = '';
+        }
+    });
+</script>
+</body>
+</html>
