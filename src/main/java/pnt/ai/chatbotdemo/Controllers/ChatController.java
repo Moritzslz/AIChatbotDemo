@@ -9,8 +9,6 @@ import pnt.ai.chatbotdemo.DTOs.OpenAIResponse;
 import pnt.ai.chatbotdemo.Services.JsonExtractionService;
 import pnt.ai.chatbotdemo.Services.OpenAIService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -59,6 +57,8 @@ public class ChatController {
         return ResponseEntity.ok(responseBody);
     }
 
+
+    // TODO Sessions
     private OpenAIRequest addMessage(HttpSession session, String role, String userMessage) {
         Object openAIRequestObject;
         if (session.getAttribute("RequestObj") == null) {
